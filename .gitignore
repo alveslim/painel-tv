@@ -1,0 +1,13 @@
+# Ambientes Virtuais
+venv/
+env/
+.env
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Planilha gerada localmente (quem baixar que gere a sua rodando o script)
+dados_mock.xlsx

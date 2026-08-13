@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" width="500" height="150">
+  <!-- Definição dos Degradês (As mesmas cores do seu CSS) -->
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ícone (Gráfico de Barras Estilizado) -->
+  <rect x="20" y="60" width="20" height="50" rx="5" fill="url(#blueGrad)" />
+  <rect x="50" y="30" width="20" height="80" rx="5" fill="url(#greenGrad)" />
+  <rect x="80" y="45" width="20" height="65" rx="5" fill="#f59e0b" />
+  
+  <!-- Detalhe do alerta vermelho do seu painel -->
+  <circle cx="105" cy="30" r="8" fill="#ef4444" />
+
+  <!-- Texto Principal -->
+  <text x="130" y="80" font-family="'Segoe UI', Tahoma, sans-serif" font-size="52" font-weight="900" fill="#f8fafc">
+    SYNC<tspan fill="#38bdf8">BOARD</tspan>
+  </text>
+  
+  <!-- Subtítulo -->
+  <text x="135" y="110" font-family="'Segoe UI', Tahoma, sans-serif" font-size="16" font-weight="700" fill="#94a3b8" letter-spacing="5">
+    SMART DATA PANEL
+  </text>
+</svg>
