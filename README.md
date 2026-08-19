@@ -31,7 +31,7 @@ Sistema completo de monitoramento em tempo real desenvolvido para painéis de TV
     </td>
     <td align="center" width="50%">
       <!-- Quando tiver o vídeo do celular, substitua o link falso abaixo pelo real -->
-      <video src="COLE_O_LINK_DO_VIDEO_DO_CELULAR_AQUI" controls width="100%"></video>
+      <img width="1200" height="1600" alt="WhatsApp Image 2026-08-19 at 13 02 17" src="https://github.com/user-attachments/assets/8351d8d9-d914-43ca-b808-479ebf682ab2" />"
     </td>
   </tr>
 </table>
