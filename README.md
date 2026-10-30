@@ -67,3 +67,43 @@ graph TD
     
     style R fill:#2563eb,stroke:#fff,stroke-width:2px,color:#fff
     style A fill:#10b981,stroke:#fff,stroke-width:2px,color:#fff
+
+
+## 🚀 Como rodar a demonstração
+
+> Esta é a **versão pública de demonstração**: usa dados 100% fictícios e credenciais de teste (`admin` / `admin`). A versão adaptada ao uso em empresa não faz parte deste repositório.
+
+```bash
+# 1. Instalar dependências (Linux/macOS: bash scripts/install_linux_mac.sh | Windows: scripts\install_windows.ps1)
+pip install -r requirements-dev.txt
+
+# 2. Gerar a planilha fictícia (datas relativas a hoje) em dados/dados_mock.xlsx
+python scripts/gerar_dados_demo.py
+
+# 3. Subir o painel e, em outro terminal, o robô sincronizador
+python app.py
+python sicronizador.py
+```
+
+Abra `http://127.0.0.1:5000` (TV) ou `http://127.0.0.1:5000/gestao` (gestão). Também funciona com Docker: `docker build -t painel-tv . && docker run -p 5000:5000 painel-tv`.
+
+## 🧪 Testes
+
+```bash
+pytest
+```
+
+Os testes cobrem o login, a renderização das telas, a API `/api/sync` e as funções de tratamento de dados e gráficos. O workflow em `.github/workflows/python-app.yml` roda o `flake8` e o `pytest` a cada push e pull request.
+
+## 📁 Estrutura
+
+```
+├── app.py                  # Painel web (Flask) + API /api/sync
+├── sicronizador.py         # Robô de demonstração (ETL)
+├── services/data_service.py
+├── templates/index.html    # Telas do painel
+├── static/                 # CSS, JS, manifest e logo
+├── dados/dados_mock.xlsx   # Dados fictícios de exemplo
+├── scripts/                # Gerador de dados e instaladores
+└── tests/                  # pytest
+```

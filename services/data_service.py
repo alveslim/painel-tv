@@ -2,6 +2,9 @@ import pandas as pd
 import plotly.express as px
 from datetime import date, timedelta
 import unicodedata
+from pathlib import Path
+
+CAMINHO_DADOS = Path(__file__).resolve().parent.parent / "dados" / "dados_mock.xlsx"
 
 def remove_accents(input_str):
     if not input_str: return ""
@@ -17,12 +20,12 @@ def limpar_valor_monetario(val):
 
 def carregar_dados_demo():
     try:
-        df = pd.read_excel("dados_mock.xlsx")
+        df = pd.read_excel(CAMINHO_DADOS)
         df["DATA_OBJ"] = pd.to_datetime(df["DATA_PREVISTA"], dayfirst=True, errors="coerce")
         df["VALOR_NUM"] = df["VALOR"].apply(limpar_valor_monetario)
         return df
     except Exception as e:
-        print("Erro ao ler dados_mock.xlsx. Rode o gerador_de_dados.py primeiro.")
+        print("Erro ao ler dados/dados_mock.xlsx. Rode: python scripts/gerar_dados_demo.py")
         return pd.DataFrame()
 
 def obter_dados_dashboard(df):

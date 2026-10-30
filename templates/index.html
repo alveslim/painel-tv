@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel TV - Monitoramento</title>
+
+    <!-- Ícone da aba do navegador (Favicon) -->
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/png">
+    <!-- Link para o CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- TAGS PARA TRANSFORMAR EM APLICATIVO (PWA) -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#0b0f19">
+
+    <!-- Tags específicas para iPhone (iOS) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Painel TV">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+</head>
+<body>
+
+    <div class="tv-card">
+
+        <div class="slider-viewport">
+
+            <!-- SLIDE 1: Tabela Completa de HOJE -->
+            <div class="slide-item active {% if dados.tem_critico %}tem-item-critico{% endif %}" id="slide-hoje">
+
+                <!-- 👻 LOGO GIGANTE NO CENTRO (MARCA D'ÁGUA) -->
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Marca D'água" class="logo-marca-dagua">
+
+                <div class="header-container">
+                    <!-- 🏢 LOGO PEQUENA NO CANTO SUPERIOR ESQUERDO -->
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" class="logo-empresa">
+
+                    {% if dados.tem_critico %}
+                        <div class="alerta-header">🚨 ATENÇÃO: EXISTEM OPs CRÍTICAS PROGRAMADAS PARA HOJE!</div>
+                    {% else %}
+                        <div class="slide-header">📅 PROGRAMAÇÃO DE HOJE ({{ dados.data_hoje }})</div>
+                    {% endif %}
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>CLIENTE</th>
+                                <th>EMPRESA</th>
+                                <th>REFERÊNCIA</th>
+                                <th>OP/LAYOUT</th>
+                                <th>FTD</th>
+                                <th>SITUAÇÃO</th>
+                                <th>DATA PREVISTA</th>
+                                <th>CRÍTICO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in dados.hoje %}
+                            <tr class="{% if row.IS_CRITICO %}linha-critica{% endif %}">
+                                <td>{{ row.ITEM }}</td>
+                                <td><strong>{{ row.CLIENTE }}</strong></td>
+                                <td>{{ row.EMPRESA }}</td>
+                                <td>{{ row.REFERENCIA }}</td>
+                                <td>{{ row.OP_LAYOUT }}</td>
+                                <td>{{ row.FTD }}</td>
+                                <td><span class="badge {{ row.SITUACAO_CLASS }}">{{ row.SERVICO_SITUACAO }}</span></td>
+                                <td>{{ row.DATA_PREVISTA }}</td>
+                                <td>
+                                    {% if row.IS_CRITICO %}
+                                        <span class="badge critico">CRÍTICO</span>
+                                    {% else %}
+                                        <span class="texto-normal">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="9" class="empty-msg">Nenhuma OP programada para hoje.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: Tabela Completa de AMANHÃ -->
+            <div class="slide-item">
+
+                <!-- 👻 LOGO GIGANTE NO CENTRO (MARCA D'ÁGUA) -->
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Marca D'água" class="logo-marca-dagua">
+
+                <div class="header-container">
+                    <!-- 🏢 LOGO PEQUENA NO CANTO SUPERIOR ESQUERDO -->
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" class="logo-empresa">
+                    <div class="slide-header">➡️ PROGRAMAÇÃO DE AMANHÃ ({{ dados.data_amanha }})</div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>CLIENTE</th>
+                                <th>EMPRESA</th>
+                                <th>REFERÊNCIA</th>
+                                <th>OP/LAYOUT</th>
+                                <th>FTD</th>
+                                <th>SITUAÇÃO</th>
+                                <th>DATA PREVISTA</th>
+                                <th>CRÍTICO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in dados.amanha %}
+                            <tr class="{% if row.IS_CRITICO %}linha-critica{% endif %}">
+                                <td>{{ row.ITEM }}</td>
+                                <td><strong>{{ row.CLIENTE }}</strong></td>
+                                <td>{{ row.EMPRESA }}</td>
+                                <td>{{ row.REFERENCIA }}</td>
+                                <td>{{ row.OP_LAYOUT }}</td>
+                                <td>{{ row.FTD }}</td>
+                                <td><span class="badge {{ row.SITUACAO_CLASS }}">{{ row.SERVICO_SITUACAO }}</span></td>
+                                <td>{{ row.DATA_PREVISTA }}</td>
+                                <td>
+                                    {% if row.IS_CRITICO %}
+                                        <span class="badge critico">CRÍTICO</span>
+                                    {% else %}
+                                        <span class="texto-normal">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="9" class="empty-msg">Nenhuma OP programada para amanhã.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: Gráficos Operacionais (OCULTO NA PRODUÇÃO) -->
+            {% if not is_producao %}
+            <div class="slide-item">
+                <div class="header-container">
+                    <!-- 🏢 LOGO PEQUENA NO CANTO SUPERIOR ESQUERDO -->
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" class="logo-empresa">
+                    <div class="slide-header">📊 PANORAMA GERAL E ESTATÍSTICAS</div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-box">{{ grafico_pizza | safe }}</div>
+                    <div class="chart-box">{{ grafico_mensal | safe }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+           <!-- SLIDE 4: DADOS FINANCEIROS (EXCLUSIVO DA GESTÃO) -->
+            {% if is_gestao %}
+            <div class="slide-item">
+                <div class="header-container">
+                    <!-- 🏢 LOGO PEQUENA NO CANTO SUPERIOR ESQUERDO -->
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" class="logo-empresa">
+                    <div class="slide-header financeiro-header"> DASHBOARD FINANCEIRO E RENDIMENTOS</div>
+                </div>
+
+                <!-- KPI Cards Financeiros (Apenas Anual e Mensal) -->
+                <div class="kpi-grid">
+                    <div class="kpi-card destaque">
+                        <span class="kpi-label">FATURAMENTO ANUAL</span>
+                        <span class="kpi-value gold">{{ dados.financeiro.total_anual }}</span>
+                    </div>
+                    <div class="kpi-card destaque">
+                        <span class="kpi-label">FATURAMENTO DO MÊS</span>
+                        <span class="kpi-value gold">{{ dados.financeiro.total_mensal }}</span>
+                    </div>
+                </div>
+
+                <!-- Gráficos de Faturamento em R$ -->
+                <div class="charts-grid">
+                    <div class="chart-box">{{ grafico_fat_mensal | safe }}</div>
+                    <div class="chart-box">{{ grafico_fat_cliente | safe }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div> <!-- Fechamento correto da div slider-viewport -->
+
+        <!-- Botão Flutuante de Avançar Slide -->
+        <button id="btn-next" class="btn-floating" title="Avançar Slide (Seta p/ Direita)">
+            ▶
+        </button>
+
+        <!-- Barra de Progresso no Rodapé -->
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
+        </div>
+
+    </div> <!-- Fechamento da div tv-card -->
+
+    <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
+</body>
+</html>

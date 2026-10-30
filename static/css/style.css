@@ -1,0 +1,417 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0b0f19;
+    color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    padding: 15px;
+}
+
+.tv-card {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    width: 98vw;
+    height: 94vh;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.slider-viewport {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.slide-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+    pointer-events: none;
+    z-index: 1; /* Adicionado para suportar a marca d'água no fundo */
+}
+
+.slide-item.active {
+    opacity: 1;
+    transform: translateX(0%);
+    pointer-events: auto;
+}
+
+.slide-item.exit {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+/* Container do Cabeçalho com mais espaço vertical */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+    min-height: 90px;
+    z-index: 10; /* Garante que o texto fique por cima da marca d'água */
+}
+
+/* Logo da Empresa Padrão (Caso ainda precise usar) */
+.logo-empresa {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    max-height: 85px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 2px 6px rgba(255, 255, 255, 0.25));
+}
+
+/* =========================================
+   NOVO: LOGO COMO MARCA D'ÁGUA (SÓ NAS TABELAS)
+   ========================================= */
+.logo-marca-dagua {
+    position: absolute;
+    top: 55%; /* Coloquei 55% para ela ficar bem no meio da tabela */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-width: 80vw;
+    opacity: 0.08; /* Deixei levemente mais forte (8%) */
+    z-index: 20; /* 🔥 A MÁGICA: Joga a logo para a FRENTE da tabela */
+    pointer-events: none; /* Faz o mouse/dedo atravessar a logo */
+}
+
+.slide-header {
+    font-size: 22px;
+    font-weight: 700;
+    color: #38bdf8;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.alerta-header {
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    animation: piscarAlerta 0.8s infinite alternate;
+    text-align: center;
+}
+
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #0f172a;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    position: relative;
+    z-index: 10; /* Garante que a tabela fique por cima da marca d'água */
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #1e293b;
+    color: #94a3b8;
+    padding: 12px 16px;
+    font-size: 14px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e293b;
+    color: #f1f5f9;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: #334155;
+}
+
+.badge.critico {
+    background-color: #ef4444;
+    color: white;
+    animation: piscarAlerta 1s infinite alternate;
+}
+
+tr.linha-critica {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+    border-left: 5px solid #ef4444;
+}
+
+@keyframes piscarAlerta {
+    0% { opacity: 1; box-shadow: 0 0 10px rgba(239, 68, 68, 0.8); }
+    100% { opacity: 0.5; box-shadow: 0 0 2px rgba(239, 68, 68, 0.2); }
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 15px;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.chart-box {
+    background-color: #0f172a;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    padding: 10px;
+    height: 100%;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: #334155;
+    border-radius: 3px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+/* Ajuste da Animação da Barra de Progresso para 30 Segundos */
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #38bdf8, #10b981);
+    animation: progressLoop 30s linear infinite;
+}
+
+@keyframes progressLoop {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* Indicador de Pausa Flutuante (para uso em PCs e Notebooks) */
+.pause-indicator {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    background-color: rgba(15, 23, 42, 0.95);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.pause-indicator.visible {
+    opacity: 1;
+}
+
+/* -------------------------------------------------------------------------
+   ESTILOS EXCLUSIVOS DO DASHBOARD FINANCEIRO
+   ------------------------------------------------------------------------- */
+.slide-header.financeiro-header {
+    color: #10b981; /* Verde esmeralda executivo */
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 🚀 Mudamos de 4 para 2 colunas */
+    gap: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 10;
+}
+
+.kpi-card {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.kpi-card.destaque {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+}
+
+.kpi-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.kpi-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #f1f5f9;
+}
+
+.kpi-value.gold {
+    color: #f59e0b; /* Dourado */
+}
+
+.kpi-value.highlight {
+    color: #38bdf8; /* Azul cyan */
+}
+
+/* -------------------------------------------------------------------------
+   BOTÃO FLUTUANTE DE AVANÇAR SLIDE
+   ------------------------------------------------------------------------- */
+.btn-floating {
+    position: absolute;
+    bottom: 35px; /* Fica posicionado logo acima da barra de progresso */
+    right: 25px;
+    background-color: rgba(56, 189, 248, 0.15); /* Fundo azul transparente */
+    color: #38bdf8;
+    border: 1px solid #38bdf8;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-floating:hover {
+    background-color: #38bdf8; /* Acende ao passar o mouse */
+    color: #0b0f19;
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE PARA CELULARES E TABLETS (Mobile First)
+   ========================================================================== */
+@media (max-width: 850px) {
+    body {
+        padding: 5px;
+    }
+
+    .tv-card {
+        width: 100vw;
+        height: 98vh;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /* 1. CABEÇALHO */
+    .header-container {
+        flex-direction: column;
+        margin-bottom: 10px;
+        min-height: auto;
+        gap: 10px;
+    }
+
+    .logo-empresa {
+        position: relative;
+        transform: none;
+        top: 0;
+        max-height: 50px;
+    }
+
+    .slide-header { font-size: 15px; }
+    .alerta-header { font-size: 13px; padding: 8px; }
+
+    /* 2. TABELA */
+    .table-container {
+        overflow-x: auto;
+        overflow-y: auto;
+        margin-bottom: 60px; /* Dá um respiro pro botão não tampar os dados */
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .badge { font-size: 10px; padding: 3px 6px; }
+
+    /* 3. GRÁFICOS */
+    .charts-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 15px;
+        overflow-y: auto;
+        padding-right: 5px;
+        padding-bottom: 60px; /* Dá um respiro pro botão */
+    }
+
+    .chart-box {
+        min-height: 450px; /* 🔥 Aumentamos de 300 para 450 para o gráfico caber inteiro */
+        margin-bottom: 20px; /* 🔥 Damos um espaço extra entre os gráficos */
+    }
+
+    /* 4. DASHBOARD FINANCEIRO */
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .kpi-card { padding: 10px; }
+    .kpi-label { font-size: 10px; text-align: center; }
+    .kpi-value { font-size: 18px; }
+
+    /* 🔥 5. NOVO: BOTÃO CENTRALIZADO E BARRA INVISÍVEL 🔥 */
+    .progress-bar-container,
+    .pause-indicator {
+        display: none !important; /* Some com a barra no celular */
+    }
+
+    .btn-floating {
+        left: 50% !important; /* Joga para o meio da tela */
+        transform: translateX(-50%) !important; /* Centraliza perfeitamente */
+        right: auto !important; /* Anula a posição do PC */
+        width: 65px !important;
+        height: 65px !important;
+        font-size: 26px !important;
+        bottom: 15px !important;
+        background-color: #38bdf8 !important; /* Já deixa azul chamativo */
+        color: #0b0f19 !important;
+        box-shadow: 0 5px 20px rgba(56, 189, 248, 0.5) !important;
+    }
+}
