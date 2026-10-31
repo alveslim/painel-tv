@@ -80,3 +80,9 @@ def test_carregar_dados_demo_le_a_planilha_do_repositorio():
     df = ds.carregar_dados_demo()
     assert not df.empty
     assert {"CLIENTE", "DATA_OBJ", "VALOR_NUM"} <= set(df.columns)
+
+
+def test_dados_demo_tem_itens_hoje_amanha_e_um_critico():
+    dados = ds.obter_dados_dashboard(ds.carregar_dados_demo())
+    assert len(dados["hoje"]) > 0 and len(dados["amanha"]) > 0
+    assert dados["tem_critico"] is True
