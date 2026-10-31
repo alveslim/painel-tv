@@ -15,6 +15,23 @@ banco_de_dados = {
     "grafico_pizza": "Aguardando dados...", "grafico_mensal": "", "grafico_fat_mensal": "", "grafico_fat_cliente": ""
 }
 
+def carregar_pacote_inicial():
+    """Carrega a planilha fictícia na partida, para o painel nunca abrir vazio.
+
+    O robô (sicronizador.py) continua sobrescrevendo estes dados via /api/sync."""
+    try:
+        from services.data_service import carregar_dados_demo, montar_pacote
+        df = carregar_dados_demo()
+        if not df.empty:
+            return montar_pacote(df)
+    except Exception as erro:
+        print(f"Não foi possível carregar os dados de demonstração: {erro}")
+    return None
+
+
+banco_de_dados = carregar_pacote_inicial() or banco_de_dados
+
+
 def check_auth(username, password):
     return username == USUARIO_CLIENTE and password == SENHA_CLIENTE
 

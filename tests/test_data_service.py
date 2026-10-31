@@ -86,3 +86,11 @@ def test_dados_demo_tem_itens_hoje_amanha_e_um_critico():
     dados = ds.obter_dados_dashboard(ds.carregar_dados_demo())
     assert len(dados["hoje"]) > 0 and len(dados["amanha"]) > 0
     assert dados["tem_critico"] is True
+
+
+def test_garantir_dados_demo_gera_planilha_quando_falta(tmp_path, monkeypatch):
+    monkeypatch.setattr(ds, "CAMINHO_DADOS", tmp_path / "dados" / "dados_mock.xlsx")
+    ds.garantir_dados_demo()
+    assert ds.CAMINHO_DADOS.exists()
+    hoje = date.today().strftime("%d/%m/%Y")
+    assert hoje in set(pd.read_excel(ds.CAMINHO_DADOS)["DATA_PREVISTA"].astype(str))
