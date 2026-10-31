@@ -4,7 +4,8 @@ from datetime import date, timedelta
 import unicodedata
 from pathlib import Path
 
-CAMINHO_DADOS = Path(__file__).resolve().parent.parent / "dados" / "dados_mock.xlsx"
+RAIZ = Path(__file__).resolve().parent.parent
+CAMINHO_DADOS = RAIZ / "dados" / "dados_mock.xlsx"
 
 def remove_accents(input_str):
     if not input_str: return ""
@@ -18,8 +19,29 @@ def limpar_valor_monetario(val):
     try: return float(val_str)
     except: return 0.0
 
+def garantir_dados_demo():
+    """Gera a planilha fictícia se ela não existir ou não tiver itens para hoje."""
+    precisa = not CAMINHO_DADOS.exists()
+    if not precisa:
+        try:
+            hoje = date.today().strftime("%d/%m/%Y")
+            precisa = hoje not in set(pd.read_excel(CAMINHO_DADOS)["DATA_PREVISTA"].astype(str))
+        except Exception:
+            precisa = True
+    if precisa:
+        import importlib.util
+        script = RAIZ / "scripts" / "gerar_dados_demo.py"
+        spec = importlib.util.spec_from_file_location("gerar_dados_demo", script)
+        modulo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(modulo)
+        CAMINHO_DADOS.parent.mkdir(parents=True, exist_ok=True)
+        modulo.gerar().to_excel(CAMINHO_DADOS, index=False)
+        print(f"Planilha fictícia (re)gerada em {CAMINHO_DADOS}")
+
+
 def carregar_dados_demo():
     try:
+        garantir_dados_demo()
         df = pd.read_excel(CAMINHO_DADOS)
         df["DATA_OBJ"] = pd.to_datetime(df["DATA_PREVISTA"], dayfirst=True, errors="coerce")
         df["VALOR_NUM"] = df["VALOR"].apply(limpar_valor_monetario)
@@ -101,3 +123,14 @@ def gerar_grafico_faturamento_cliente_html(df):
     fig = px.bar(df_cli, x="VALOR_NUM", y="CLIENTE", orientation="h", title="Faturamento por Cliente", text="TEXTO", color="VALOR_NUM", color_continuous_scale="Greens")
     fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", coloraxis_showscale=False, xaxis=dict(showticklabels=False))
     return fig.to_html(full_html=False, include_plotlyjs=False)
+
+
+def montar_pacote(df):
+    """Pacote completo (dados + gráficos) que o painel exibe."""
+    return {
+        "dados": obter_dados_dashboard(df),
+        "grafico_pizza": gerar_grafico_pizza_html(df),
+        "grafico_mensal": gerar_grafico_mensal_html(df),
+        "grafico_fat_mensal": gerar_grafico_faturamento_mensal_html(df),
+        "grafico_fat_cliente": gerar_grafico_faturamento_cliente_html(df),
+    }
